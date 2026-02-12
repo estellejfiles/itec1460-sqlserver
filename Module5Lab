@@ -1,0 +1,33 @@
+-- create a new customer in the Customers table
+INSERT INTO Customers (CustomerID, CompanyName, ContactName, Country)
+VALUES ('STUDE', 'Student Company', 'Mary Lebens', 'USA');
+
+-- verify that the record was inserted correctly
+SELECT * FROM Customers WHERE CustomerID = 'STUDE';
+
+-- create a new order for the customer we created
+INSERT INTO Orders (CustomerID, EmployeeID, OrderDate, ShipCountry)
+VALUES ('STUDE', 1, GETDATE(), 'USA');
+
+-- verify that the order was entered
+SELECT * FROM Orders WHERE CustomerID = 'STUDE';
+
+-- change the contact name for our customer
+UPDATE Customers SET ContactName = 'New Contact Name'
+WHERE CustomerID = 'STUDE';
+
+-- change the shipping country for our order
+UPDATE Orders SET ShipCountry = 'New Country'
+WHERE CustomerID = 'STUDE';
+
+-- delete the order we inserted for the new customer
+DELETE FROM Orders WHERE CustomerID = 'STUDE';
+
+-- verify the order was deleted
+SELECT OrderID, CustomerID FROM Orders WHERE CustomerID = 'STUDE';
+
+-- remove test customer from the customers table
+DELETE FROM Customers WHERE CustomerID = 'STUDE';
+
+-- verify the customer was removed
+SELECT * FROM Customers WHERE CustomerID = 'STUDE';
