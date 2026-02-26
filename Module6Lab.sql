@@ -135,3 +135,35 @@ WHERE BookID = 1;
 -- check audit table
 SELECT * FROM BookPriceAudit;
 GO
+
+
+
+
+
+-- PART TWO:
+
+-- #2 create BookReviews table with six columns
+CREATE TABLE BookReviews (
+    ReviewID INT PRIMARY KEY,
+    BookID INT,
+    CustomerID NCHAR(5),
+    Rating INT CHECK (Rating >= 1 AND Rating <= 5),
+    ReviewText NVARCHAR(MAX),
+    ReviewDate DATE,
+    FOREIGN KEY (BookID) REFERENCES Books(BookID),
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+GO
+
+-- -- #3 create a view that shows title, # of reviews, average rating, & most recent date
+-- CREATE VIEW vw_BookReviewStats AS
+-- SELECT
+--     b.Title,
+--     COUNT(r.ReviewID) AS ReviewCount,
+--     AVG(r.Rating) AS AverageRating,
+--     MAX(r.ReviewDate) AS MostRecentReview
+-- FROM
+--     BookReviews r
+-- JOIN
+--     Books b ON b.BookID = r.BookID;
+-- GO
