@@ -159,23 +159,23 @@ GO
 -- );
 -- GO
 
--- #3 create a view that shows title, # of reviews, average rating, & most recent date
-CREATE VIEW vw_BookReviewStats AS
-SELECT
-    b.Title AS Title,
-    COUNT(r.ReviewID) AS ReviewCount,
-    AVG(r.Rating) AS AverageRating,
-    MAX(r.ReviewDate) AS MostRecentReview
-FROM
-    BookReviews r
-LEFT JOIN
-    Books b ON r.BookID = b.BookID
-GROUP BY
-    b.Title;
-GO
--- query the view
-SELECT * FROM vw_BookReviewStats;
-GO
+-- -- #3 create a view that shows title, # of reviews, average rating, & most recent date
+-- CREATE VIEW vw_BookReviewStats AS
+-- SELECT
+--     b.Title AS Title,
+--     COUNT(r.ReviewID) AS ReviewCount,
+--     AVG(r.Rating) AS AverageRating,
+--     MAX(r.ReviewDate) AS MostRecentReview
+-- FROM
+--     BookReviews r
+-- LEFT JOIN
+--     Books b ON r.BookID = b.BookID
+-- GROUP BY
+--     b.Title;
+-- GO
+-- -- query the view
+-- SELECT * FROM vw_BookReviewStats;
+-- GO
 
 -- #4 create triggers
 -- a) create trigger to prevent reviews from being added with future dates
