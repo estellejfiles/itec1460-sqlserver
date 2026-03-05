@@ -113,3 +113,108 @@ EXEC CalculateOrderTotal
     @TotalAmount = @TotalAmount OUTPUT;
 PRINT 'Returned total: $' + CAST(@TotalAmount AS NVARCHAR(20));
 GO
+
+
+-- PART TWO:
+USE Northwind;
+GO
+-- =============================================
+-- Part 2, Procedure 1: GetProductName
+-- =============================================
+CREATE OR ALTER PROCEDURE GetProductName
+    @ProductID INT,
+    @ProductName NVARCHAR(40) OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    -- write a SELECT statement that sets @ProductName equal to the ProductName column
+    -- from the Products table where ProductID matches @ProductID.
+    SELECT @ProductName = ProductName
+    FROM Products
+    WHERE ProductID = @ProductID;
+
+    IF @ProductName IS NULL
+        PRINT 'Product not found.';
+    ELSE
+        PRINT 'Product Name: ' + @ProductName;
+END
+GO
+
+-- test the procedure
+DECLARE @ProductName NVARCHAR(40);
+EXEC GetProductName
+    @ProductID = 1,
+    @ProductName = @ProductName OUTPUT;
+GO
+
+-- =============================================
+-- Part 2, Procedure 2: GetEmployeeOrderCount
+-- =============================================
+CREATE OR ALTER PROCEDURE GetEmployeeOrderCount
+    @EmployeeID INT,
+    @OrderCount INT OUTPUT
+AS
+BEGIN
+    -- 1. Turn off row count messages (SET NOCOUNT ON)
+    SET NOCOUNT ON;
+    -- 2. Write a SELECT statement that counts orders for this employee and stores the result in @OrderCount
+    SELECT @OrderCount = COUNT(*)
+    FROM Orders
+    WHERE EmployeeID = @EmployeeID;
+    -- 3. Print a message showing the employee ID and their order count.
+    --    Hint: Use CAST to convert INT values to NVARCHAR for PRINT.
+    PRINT 'Order Count for Employee ' + CAST(@EmployeeID AS NVARCHAR(10)) + ': ' + CAST(@OrderCount AS NVARCHAR(10));
+END
+GO
+
+-- test it
+DECLARE @OrderCount INT;
+EXEC GetEmployeeOrderCount
+    @EmployeeID = 5,
+    @OrderCount = @OrderCount OUTPUT;
+GO
+-- SELECT EmployeeID, COUNT(*) AS OrderCount FROM Orders GROUP BY EmployeeID;
+
+
+-- =============================================
+-- Part 2, Procedure 3: CheckProductStock
+-- =============================================
+CREATE OR ALTER PROCEDURE CheckProductStock
+    @ProductID INT,
+    @NeedsReorder BIT OUTPUT
+AS
+BEGIN
+    -- 1. turn off row count messages
+    SET NOCOUNT ON;
+    -- declare relevant variables
+    DECLARE @UnitsInStock INT;
+    DECLARE @ReorderLevel INT;
+    -- 3. write a select statement to access units in stock
+    SELECT @UnitsInStock = UnitsInStock
+    FROM Products
+    WHERE ProductID = @ProductID;
+    -- 4. set @NeedsReorder to 1 if units in stock is less than or equal to reorder level, otherwise set it to 0
+    SELECT @ReorderLevel = ReorderLevel
+    FROM Products
+    WHERE ProductID = @ProductID;
+    IF @UnitsInStock <= @ReorderLevel
+        SET @NeedsReorder = 1;
+    ELSE
+        SET @NeedsReorder = 0;
+    -- 5. print a message depending on if product needs to be reordered
+    If @NeedsReorder = 1
+        PRINT 'Product ' + CAST(@ProductID AS NVARCHAR(10)) + ' needs reordering.';
+    IF @NeedsReorder = 0
+        PRINT 'Product ' + CAST(@ProductID AS NVARCHAR(10)) + ' stock is OK.';
+END
+GO
+
+-- test CheckProductStock
+DECLARE @NeedsReorder BIT;
+EXEC CheckProductStock
+    @ProductID = 2,
+    @NeedsReorder = @NeedsReorder OUTPUT;
+PRINT 'Needs Reorder flag: ' + CAST(@NeedsReorder AS VARCHAR(1));
+GO
+
+-- SELECT ProductID, ProductName, UnitsInStock, ReorderLevel FROM Products WHERE ProductID = 2;
